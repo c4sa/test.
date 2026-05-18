@@ -861,6 +861,231 @@ body::after {
   .visual-area { overflow: hidden; }
   .number-wall { grid-template-columns: repeat(5, 1fr); }
 }
+
+
+/* ===== تحديث 2: صفحة أوسع + مكعب أوضح ===== */
+.game-container {
+  width: min(100%, 1440px);
+  max-width: 1440px;
+  padding: clamp(16px, 2vw, 30px);
+}
+.screen {
+  min-height: calc(100vh - 112px);
+}
+.start-screen {
+  min-height: calc(100vh - 112px);
+  display: flex;
+  align-items: stretch;
+  padding: clamp(28px, 3.4vw, 54px);
+}
+.start-layout {
+  width: 100%;
+  grid-template-columns: minmax(470px, .95fr) minmax(560px, 1.05fr);
+  gap: clamp(36px, 5vw, 78px);
+  align-items: stretch;
+}
+.hero-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.game-title {
+  font-size: clamp(2.8rem, 4.7vw, 5.45rem);
+  line-height: .98;
+  max-width: 760px;
+  margin-bottom: 18px;
+}
+.subtitle {
+  max-width: 760px;
+  font-size: 1.22rem;
+}
+.section-title {
+  margin-top: 30px;
+}
+.character-select {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.character {
+  min-height: 142px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 15px;
+  row-gap: 6px;
+  padding: 18px;
+}
+.character .saudi-avatar {
+  width: 74px;
+  height: 74px;
+  border-radius: 26px;
+  margin-inline-start: 0;
+  grid-row: 1 / span 2;
+}
+.character-name {
+  margin-top: 0;
+  font-size: 1.12rem;
+}
+.character-line {
+  margin-top: -2px;
+  font-size: .94rem;
+}
+#startBtn {
+  align-self: flex-start;
+  padding-inline: 42px;
+}
+.hero-panel {
+  min-height: 100%;
+  display: grid;
+  padding: clamp(24px, 2.6vw, 38px);
+  background:
+    radial-gradient(circle at 20% 10%, rgba(0,212,255,0.18), transparent 35%),
+    radial-gradient(circle at 75% 90%, rgba(32,227,178,0.13), transparent 40%),
+    rgba(255,255,255,0.07);
+}
+.meme-card {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  padding: clamp(24px, 2.4vw, 36px);
+  background:
+    linear-gradient(135deg, rgba(0,212,255,0.16), transparent 42%),
+    linear-gradient(315deg, rgba(32,227,178,0.13), transparent 52%),
+    rgba(0,0,0,0.30);
+}
+.meme-card::after {
+  content: "";
+  display: none;
+}
+.cube-scene {
+  flex: 1;
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  perspective: 980px;
+  isolation: isolate;
+}
+.prob-cube {
+  width: clamp(190px, 17vw, 250px);
+  height: clamp(190px, 17vw, 250px);
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(-18deg) rotateY(34deg);
+  animation: cubeFloat 4.2s ease-in-out infinite;
+}
+.cube-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 30px;
+  border: 2px solid rgba(255,255,255,.34);
+  color: #ffffff;
+  font-size: clamp(2.25rem, 3.9vw, 4.1rem);
+  font-weight: 1000;
+  direction: ltr;
+  text-shadow: 0 4px 18px rgba(0,0,0,.45);
+  box-shadow:
+    inset 0 0 42px rgba(255,255,255,.13),
+    0 28px 70px rgba(0,0,0,.38);
+  backface-visibility: hidden;
+}
+.cube-front {
+  transform: translateZ(calc(clamp(190px, 17vw, 250px) / 2));
+  background: linear-gradient(145deg, rgba(0,212,255,.95), rgba(10,33,78,.94));
+}
+.cube-right {
+  transform: rotateY(90deg) translateZ(calc(clamp(190px, 17vw, 250px) / 2));
+  background: linear-gradient(145deg, rgba(124,92,255,.95), rgba(23,21,60,.96));
+  font-size: clamp(3.4rem, 6vw, 6.2rem);
+}
+.cube-top {
+  transform: rotateX(90deg) translateZ(calc(clamp(190px, 17vw, 250px) / 2));
+  background: linear-gradient(145deg, rgba(32,227,178,.96), rgba(8,60,53,.96));
+}
+.cube-shadow {
+  position: absolute;
+  width: clamp(210px, 20vw, 300px);
+  height: 48px;
+  bottom: 8%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,.50), transparent 70%);
+  filter: blur(5px);
+  transform: rotateX(68deg);
+  z-index: -1;
+}
+@keyframes cubeFloat {
+  0%, 100% { transform: rotateX(-18deg) rotateY(34deg) translateY(0); }
+  50% { transform: rotateX(-13deg) rotateY(42deg) translateY(-14px); }
+}
+.formula-strip {
+  direction: ltr;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.16);
+  color: #dff8ff;
+  font-weight: 1000;
+  font-size: 1.2rem;
+}
+.formula-strip strong {
+  color: #20e3b2;
+}
+.dice {
+  width: 86px;
+  height: 86px;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #ffffff, #dbe8ff 78%);
+  color: #07111f;
+  border: 2px solid rgba(255,255,255,.72);
+  font-size: 2.65rem;
+  text-shadow: 0 1px 0 rgba(255,255,255,.4);
+  box-shadow: 0 18px 38px rgba(0,0,0,.24), inset 0 -10px 24px rgba(0,0,0,.10);
+  direction: ltr;
+}
+.coin {
+  width: 84px;
+  height: 84px;
+  box-shadow: 0 18px 38px rgba(0,0,0,.24), inset 0 -10px 20px rgba(0,0,0,.13);
+}
+.card-tile {
+  display: inline-grid;
+  place-items: center;
+  width: 76px;
+  height: 96px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fff, #e8eefb);
+  color: #07111f;
+  border: 2px solid rgba(255,255,255,.75);
+  font-weight: 1000;
+  font-size: 1.8rem;
+  box-shadow: 0 16px 32px rgba(0,0,0,.22);
+  direction: ltr;
+}
+
+@media (max-width: 1120px) {
+  .start-layout { grid-template-columns: 1fr; }
+  .hero-panel { order: -1; min-height: 430px; }
+  .meme-card { min-height: 430px; }
+  .game-title, .subtitle { max-width: 100%; }
+}
+@media (max-width: 700px) {
+  .start-screen { padding: 22px; }
+  .character-select { grid-template-columns: 1fr; }
+  .character { grid-template-columns: 1fr; text-align: center; }
+  .character .saudi-avatar { margin: 0 auto; grid-row: auto; }
+  #startBtn { align-self: stretch; }
+  .cube-scene { min-height: 230px; }
+}
+
 </style>
 </head>
 <body>
@@ -969,7 +1194,7 @@ function showStartScreen() {
       <div class="start-layout">
         <div class="hero-copy">
           <div class="kicker">نسخة الثانوية — بدون أجواء أطفال</div>
-          <h1 class="game-title"><span class="gradient-text">تحدي الاحتمالات</span><br>للشباب اللي يفهمونها بسرعة</h1>
+          <h1 class="game-title"><span class="gradient-text">تحدي الاحتمالات</span><br>للثانوي بدون دراما</h1>
           <p class="subtitle">
             لعبة تعليمية بطابع سعودي عصري: أسئلة احتمالات، مواقف خفيفة، وشخصيات تمثل جو الثانوي بدون ألوان طفولية أو شكل مبالغ فيه.
           </p>
@@ -987,9 +1212,17 @@ function showStartScreen() {
         </div>
         <div class="hero-panel">
           <div class="meme-card">
-            <div class="chat-bubble">الأستاذ: الاحتمال بسيط…</div>
-            <div class="chat-bubble alt">الطلاب: بسيط لين تدخل الكسور.</div>
-            <div class="chat-bubble">اليوم بنخليه مفهوم، بدون فلسفة زايدة.</div>
+            <div class="chat-bubble">الأستاذ: الاحتمال بسيط… بس ركزوا في المكعب.</div>
+            <div class="cube-scene" aria-hidden="true">
+              <div class="prob-cube">
+                <div class="cube-face cube-front">P(A)</div>
+                <div class="cube-face cube-right">×</div>
+                <div class="cube-face cube-top">P(B)</div>
+              </div>
+              <div class="cube-shadow"></div>
+            </div>
+            <div class="chat-bubble alt">الطلاب: الحين واضح، بس لا تدخلوننا في دراما الكسور.</div>
+            <div class="formula-strip"><span>1/2</span><span>×</span><span>1/6</span><span>=</span><strong>1/12</strong></div>
           </div>
         </div>
       </div>
@@ -1103,7 +1336,7 @@ const questions = {
   perm: [
     {
       scenario: "مشاري قرر يحسم نقاش المجموعة: عملة ومكعب رقمي في تجربة واحدة. كل نتيجة مستقلة عن الثانية.",
-      visual: `<div><div class="coin">شعار</div><div class="dice">1-6</div></div>`,
+      visual: `<div><div class="coin">شعار</div><div class="dice" aria-label="مكعب رقم 6">⚅</div></div>`,
       question: "ما احتمال ظهور الشعار والعدد 6 معاً؟",
       answers: ["1/12", "1/6", "1/2", "1/8"],
       correct: 0,
@@ -1119,7 +1352,7 @@ const questions = {
     },
     {
       scenario: "سعود رمى مكعبين رقميين متمايزين. الأول له نتيجة والثاني له نتيجة مستقلة عنها.",
-      visual: `<div><div class="dice">1</div><div class="dice">6</div></div>`,
+      visual: `<div><div class="dice" aria-label="مكعب رقم 1">⚀</div><div class="dice" aria-label="مكعب رقم 6">⚅</div></div>`,
       question: "ما احتمال ظهور العدد 1 على الأول و 6 على الثاني؟",
       answers: ["1/12", "1/36", "1/6", "2/36"],
       correct: 1,
@@ -1139,7 +1372,7 @@ const questions = {
     },
     {
       scenario: "رمي مكعبين رقميين متمايزين مرة واحدة. مشاري قال: المجموع يا 6 يا 7، ما يجي الاثنين بنفس الرمية.",
-      visual: `<div><div class="dice">مكعب 1</div><div class="dice">مكعب 2</div><br><div class="visual-note" style="text-align:center;margin-top:10px;">المجموع = 6 أو المجموع = 7؟</div></div>`,
+      visual: `<div><div class="dice" aria-label="مكعب أول">⚂</div><div class="dice" aria-label="مكعب ثاني">⚃</div><br><div class="visual-note" style="text-align:center;margin-top:10px;">المجموع = 6 أو المجموع = 7؟</div></div>`,
       question: "هل الحادثتان متنافيتان؟",
       answers: ["متنافيتان", "غير متنافيتان", "مستقلتان", "مؤكدتان"],
       correct: 0,
@@ -1147,7 +1380,7 @@ const questions = {
     },
     {
       scenario: "في لعبة بطاقات عادية من 52 بطاقة، سعود يسحب بطاقة واحدة. المطلوب ملك أو ملكة.",
-      visual: `<div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;"><div class="dice">K</div><div class="dice">Q</div><div class="dice">52</div></div>`,
+      visual: `<div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;"><div class="card-tile">K</div><div class="card-tile">Q</div><div class="card-tile">52</div></div>`,
       question: "احتمال سحب ملك أو ملكة، مع العلم أنها حوادث متنافية:",
       answers: ["4/52", "8/52 = 2/13", "12/52", "16/52"],
       correct: 1,
