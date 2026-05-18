@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تحدي الاحتمالات | نسخة الثانوية</title>
+<style>
+:root {
+  --bg-1: #0b1020;
+  --bg-2: #101a33;
+  --card: rgba(17, 26, 48, 0.82);
+  --card-strong: rgba(20, 31, 58, 0.96);
+  --line: rgba(255,255,255,0.12);
+  --text: #f7f9ff;
+  --muted: #aeb8cc;
+  --accent: #00d4ff;
+  --accent-2: #7c5cff;
+  --accent-3: #20e3b2;
+  --danger: #ff5f7e;
+  --warning: #f9c74f;
+  --shadow: 0 24px 70px rgba(0,0,0,0.35);
+  --radius-xl: 32px;
+  --radius-lg: 24px;
+  --radius-md: 16px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "IBM Plex Sans Arabic", "Tajawal", "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: var(--text);
+  user-select: none;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(0,212,255,0.20), transparent 26%),
+    radial-gradient(circle at 88% 18%, rgba(124,92,255,0.23), transparent 26%),
+    radial-gradient(circle at 45% 105%, rgba(32,227,178,0.16), transparent 34%),
+    linear-gradient(135deg, var(--bg-1), var(--bg-2));
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(circle at center, black, transparent 78%);
+  opacity: 0.65;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: -160px;
+  pointer-events: none;
+  background: conic-gradient(from 180deg, transparent, rgba(0,212,255,0.14), transparent, rgba(124,92,255,0.14), transparent);
+  animation: slowRotate 22s linear infinite;
+  opacity: 0.55;
+}
+
+@keyframes slowRotate { to { transform: rotate(360deg); } }
+
+.bg-orbs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+.orb {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  filter: blur(36px);
+  opacity: 0.34;
+  animation: drift 11s ease-in-out infinite alternate;
+}
+.orb.one { right: 8%; top: 12%; background: #00d4ff; }
+.orb.two { left: 7%; bottom: 10%; background: #7c5cff; animation-delay: -4s; }
+.orb.three { left: 42%; top: 58%; background: #20e3b2; animation-delay: -7s; }
+@keyframes drift {
+  from { transform: translate3d(0,0,0) scale(1); }
+  to { transform: translate3d(34px,-26px,0) scale(1.12); }
+}
+
+.game-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: rgba(11, 16, 32, 0.58);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(20px);
+  margin-bottom: 18px;
+}
+
+.brand-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--line);
+  color: #dce7ff;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #08101f;
+  font-weight: 1000;
+}
+
+.stats-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-weight: 800;
+}
+.stat small {
+  color: var(--muted);
+  font-weight: 700;
+}
+.sound-toggle {
+  cursor: pointer;
+  min-width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--line);
+  font-weight: 900;
+  transition: transform .22s ease, background .22s ease;
+}
+.sound-toggle:hover { transform: translateY(-2px); background: rgba(255,255,255,0.13); }
+
+.screen {
+  min-height: 560px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(17,26,48,0.84), rgba(8,13,26,0.88));
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(22px);
+  position: relative;
+  overflow: hidden;
+}
+.screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(0,212,255,0.08), transparent 35%),
+    linear-gradient(315deg, rgba(124,92,255,0.10), transparent 45%);
+  pointer-events: none;
+}
+.screen > * { position: relative; z-index: 1; }
+
+.start-screen, .map-screen, .complete-screen, .question-screen {
+  padding: 34px;
+}
+
+.start-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 28px;
+  align-items: center;
+}
+.hero-copy {
+  text-align: right;
+}
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 8px 12px;
+  border: 1px solid rgba(0,212,255,0.28);
+  color: #9fefff;
+  background: rgba(0,212,255,0.08);
+  font-size: .92rem;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+.game-title {
+  font-size: clamp(2.2rem, 5vw, 4.6rem);
+  line-height: 1.05;
+  letter-spacing: -1.5px;
+  font-weight: 1000;
+  margin-bottom: 16px;
+}
+.gradient-text {
+  background: linear-gradient(135deg, #f7f9ff 12%, #00d4ff 44%, #20e3b2 78%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.subtitle {
+  color: var(--muted);
+  font-size: 1.15rem;
+  line-height: 1.9;
+  max-width: 560px;
+}
+.hero-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: rgba(255,255,255,0.065);
+  padding: 20px;
+  overflow: hidden;
+}
+.meme-card {
+  min-height: 320px;
+  border-radius: 26px;
+  background:
+    linear-gradient(135deg, rgba(0,212,255,0.16), transparent 36%),
+    linear-gradient(315deg, rgba(249,199,79,0.12), transparent 48%),
+    rgba(0,0,0,0.24);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 22px;
+  display: grid;
+  align-content: space-between;
+  position: relative;
+}
+.meme-card::after {
+  content: "P(A) × P(B)";
+  position: absolute;
+  left: 22px;
+  bottom: 18px;
+  color: rgba(255,255,255,0.08);
+  font-size: 4.4rem;
+  font-weight: 1000;
+  direction: ltr;
+}
+.chat-bubble {
+  width: fit-content;
+  max-width: 84%;
+  padding: 14px 16px;
+  border-radius: 18px 18px 4px 18px;
+  background: rgba(255,255,255,0.11);
+  border: 1px solid var(--line);
+  color: #ecf5ff;
+  line-height: 1.7;
+  font-weight: 700;
+}
+.chat-bubble.alt {
+  justify-self: end;
+  border-radius: 18px 18px 18px 4px;
+  background: rgba(32,227,178,0.10);
+  color: #cffff2;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 1000;
+  color: #ecf5ff;
+  margin: 28px 0 14px;
+}
+.character-select {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.character {
+  text-align: right;
+  min-height: 180px;
+  cursor: pointer;
+  border-radius: 24px;
+  padding: 16px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--line);
+  transition: transform .24s ease, border-color .24s ease, background .24s ease, box-shadow .24s ease;
+  position: relative;
+  overflow: hidden;
+}
+.character::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.0), rgba(0,212,255,0.18), rgba(124,92,255,0.0));
+  opacity: 0;
+  transition: opacity .24s ease;
+}
+.character:hover, .character.selected {
+  transform: translateY(-6px);
+  border-color: rgba(0,212,255,0.55);
+  background: rgba(255,255,255,0.105);
+  box-shadow: 0 18px 36px rgba(0, 212, 255, .12);
+}
+.character:hover::before, .character.selected::before { opacity: 1; }
+.character.selected { outline: 2px solid rgba(32,227,178,0.46); }
+.character > * { position: relative; z-index: 1; }
+.character-name {
+  font-size: 1.05rem;
+  font-weight: 1000;
+  color: var(--text);
+  margin-top: 12px;
+}
+.character-line {
+  color: var(--muted);
+  line-height: 1.65;
+  font-size: .88rem;
+  margin-top: 6px;
+}
+
+.saudi-avatar {
+  width: 78px;
+  height: 78px;
+  border-radius: 28px;
+  position: relative;
+  background: linear-gradient(145deg, #f0c49f, #bf7a54);
+  border: 1px solid rgba(255,255,255,0.20);
+  box-shadow: inset 0 -10px 16px rgba(0,0,0,.14), 0 16px 26px rgba(0,0,0,.20);
+  margin-inline-start: auto;
+}
+.saudi-avatar::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: -12px;
+  height: 34px;
+  border-radius: 22px 22px 12px 12px;
+  background: var(--cloth, #f7f7f7);
+  border: 2px solid rgba(255,255,255,0.28);
+  box-shadow: inset 0 -10px 0 rgba(0,0,0,0.06);
+}
+.saudi-avatar::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 15px;
+  height: 7px;
+  border-radius: 999px;
+  background: #101010;
+  box-shadow: 0 26px 0 -1px rgba(70,38,28,.62);
+}
+.eyes {
+  position: absolute;
+  inset: 34px 21px auto 21px;
+  height: 6px;
+  background:
+    radial-gradient(circle at 20% 50%, #111 0 3px, transparent 4px),
+    radial-gradient(circle at 80% 50%, #111 0 3px, transparent 4px);
+}
+.sunglasses .eyes {
+  inset: 31px 16px auto 16px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0a0d13 0 44%, transparent 44% 56%, #0a0d13 56% 100%);
+}
+.sunglasses .eyes::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 42%;
+  right: 42%;
+  height: 2px;
+  background: #0a0d13;
+}
+.mouth {
+  position: absolute;
+  left: 31px;
+  top: 50px;
+  width: 18px;
+  height: 9px;
+  border-bottom: 3px solid rgba(45,20,16,.76);
+  border-radius: 0 0 999px 999px;
+}
+.avatar-cap::before {
+  background: linear-gradient(135deg, #18233f, #00d4ff);
+}
+.avatar-red::before {
+  background:
+    repeating-linear-gradient(45deg, rgba(182,28,28,.95) 0 8px, #fff 8px 16px);
+}
+.avatar-gold::before {
+  background: linear-gradient(135deg, #f9c74f, #fff3c4);
+}
+.avatar-green::before {
+  background: linear-gradient(135deg, #116149, #20e3b2);
+}
+
+.btn {
+  border: 0;
+  color: #07111f;
+  padding: 15px 26px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 1000;
+  font-size: 1.05rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent-3));
+  box-shadow: 0 16px 32px rgba(0,212,255,0.18);
+  transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
+  margin-top: 18px;
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 20px 42px rgba(32,227,178,0.20); filter: brightness(1.05); }
+.btn:active { transform: translateY(0); }
+.btn[disabled] { opacity: .45; cursor: not-allowed; filter: grayscale(1); }
+.btn-secondary {
+  color: var(--text);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+.btn-danger {
+  color: #fff;
+  background: linear-gradient(135deg, #ff5f7e, #ff8f70);
+}
+
+.map-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+.map-title {
+  font-size: clamp(1.7rem, 3vw, 2.7rem);
+  font-weight: 1000;
+  margin-bottom: 8px;
+}
+.map-subtitle { color: var(--muted); line-height: 1.8; }
+.active-character-chip {
+  min-width: 210px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.07);
+}
+.active-character-chip .saudi-avatar { width: 54px; height: 54px; border-radius: 18px; margin: 0; transform: scale(.78); transform-origin: center; }
+.active-character-chip strong { display: block; }
+.active-character-chip small { color: var(--muted); }
+
+.challenges {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.challenge {
+  min-height: 250px;
+  cursor: pointer;
+  border-radius: 28px;
+  padding: 22px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--line);
+  transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.challenge::after {
+  content: attr(data-code);
+  position: absolute;
+  left: 16px;
+  bottom: -12px;
+  font-size: 4.7rem;
+  font-weight: 1000;
+  letter-spacing: -3px;
+  color: rgba(255,255,255,0.06);
+  direction: ltr;
+}
+.challenge:hover {
+  transform: translateY(-8px);
+  border-color: rgba(0,212,255,.45);
+  background: rgba(255,255,255,0.105);
+  box-shadow: 0 24px 56px rgba(0,0,0,.25);
+}
+.challenge.completed {
+  border-color: rgba(32,227,178,.58);
+  background: linear-gradient(135deg, rgba(32,227,178,0.13), rgba(255,255,255,0.065));
+}
+.challenge-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(0,212,255,.23), rgba(124,92,255,.18));
+  border: 1px solid rgba(255,255,255,.13);
+  margin-bottom: 16px;
+  font-weight: 1000;
+  color: #dff8ff;
+  font-size: 1.12rem;
+}
+.challenge-name {
+  font-weight: 1000;
+  font-size: 1.35rem;
+  margin-bottom: 10px;
+}
+.challenge-desc {
+  color: var(--muted);
+  line-height: 1.75;
+  font-size: .96rem;
+}
+.stars-meter {
+  display: flex;
+  gap: 6px;
+  margin-top: 20px;
+}
+.star-dot {
+  width: 34px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.13);
+}
+.star-dot.full { background: linear-gradient(90deg, var(--accent), var(--accent-3)); }
+
+.question-screen { animation: fadeIn .35s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.question-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 22px;
+}
+.question-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.badge {
+  padding: 9px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.07);
+  color: #dce7ff;
+  font-weight: 900;
+}
+.progress {
+  height: 10px;
+  width: min(360px, 100%);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.10);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.progress span {
+  display: block;
+  height: 100%;
+  width: var(--p);
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-3));
+}
+.character-mini {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: end;
+  color: var(--muted);
+  font-weight: 800;
+}
+.character-mini .saudi-avatar { width: 58px; height: 58px; border-radius: 20px; margin: 0; transform: scale(.78); transform-origin: center; }
+
+.scenario {
+  border-radius: 24px;
+  border: 1px solid rgba(0,212,255,0.22);
+  background: linear-gradient(135deg, rgba(0,212,255,0.10), rgba(255,255,255,0.055));
+  padding: 22px;
+  color: #edf6ff;
+  line-height: 1.9;
+  font-size: 1.08rem;
+  margin-bottom: 18px;
+}
+.visual-area {
+  min-height: 148px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 24px;
+  padding: 24px;
+  margin: 18px 0;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(124,92,255,0.15), transparent 38%),
+    rgba(255,255,255,0.055);
+  border: 1px solid var(--line);
+}
+.question-text {
+  text-align: center;
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 1000;
+  color: var(--text);
+  margin: 22px 0 18px;
+  line-height: 1.55;
+}
+.answers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.answer-btn {
+  color: var(--text);
+  text-align: center;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.075);
+  padding: 18px;
+  border-radius: 20px;
+  font-size: 1.08rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.answer-btn:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0,212,255,0.55);
+  background: rgba(255,255,255,0.12);
+  box-shadow: 0 14px 28px rgba(0,212,255,0.09);
+}
+.answer-btn.correct {
+  color: #042116;
+  background: linear-gradient(135deg, var(--accent-3), #b5ffe7);
+  border-color: rgba(32,227,178,.86);
+  animation: correctPulse .48s ease;
+}
+.answer-btn.wrong {
+  color: #fff;
+  background: linear-gradient(135deg, var(--danger), #ff8f70);
+  border-color: rgba(255,95,126,.86);
+  animation: shake .36s ease;
+}
+@keyframes correctPulse { 50% { transform: scale(1.025); } }
+@keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+.feedback {
+  margin-top: 18px;
+  border-radius: 24px;
+  padding: 20px;
+  line-height: 1.85;
+  text-align: center;
+  border: 1px solid var(--line);
+  animation: fadeIn .3s ease;
+}
+.feedback.correct {
+  background: rgba(32,227,178,0.12);
+  border-color: rgba(32,227,178,0.42);
+  color: #d8fff3;
+}
+.feedback.wrong {
+  background: rgba(255,95,126,0.12);
+  border-color: rgba(255,95,126,0.42);
+  color: #ffe0e7;
+}
+.feedback strong { color: #fff; }
+
+.line-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  font-size: 1rem;
+  font-weight: 1000;
+  direction: ltr;
+  min-width: 520px;
+}
+.point {
+  background: linear-gradient(135deg, #00d4ff, #7c5cff);
+  color: #fff;
+  width: 42px;
+  height: 42px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,.18);
+}
+.segment {
+  height: 7px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.28), var(--accent));
+  position: relative;
+}
+.segment-label {
+  position: absolute;
+  top: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #dce7ff;
+  direction: rtl;
+}
+.dice {
+  display: inline-grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  margin: 6px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 1000;
+  box-shadow: 0 14px 26px rgba(0,0,0,0.18);
+}
+.coin {
+  display: inline-grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  margin: 6px;
+  border-radius: 50%;
+  color: #14120a;
+  background: linear-gradient(135deg, #fff4b8, #f9c74f 50%, #b97913);
+  border: 1px solid rgba(255,255,255,.35);
+  font-weight: 1000;
+  box-shadow: 0 14px 26px rgba(0,0,0,0.18);
+}
+.container-visual {
+  width: 112px;
+  height: 210px;
+  border: 3px solid rgba(255,255,255,0.78);
+  border-top: 0;
+  border-radius: 0 0 24px 24px;
+  position: relative;
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+}
+.tea-level {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 25%;
+  background: linear-gradient(to top, rgba(0,212,255,.72), rgba(32,227,178,.72));
+  box-shadow: 0 -10px 28px rgba(0,212,255,.22);
+}
+.visual-note { text-align: right; color: var(--muted); line-height: 1.9; font-weight: 800; }
+.number-wall {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 7px;
+  direction: ltr;
+  max-width: 430px;
+  margin: 0 auto;
+}
+.number-wall span {
+  padding: 7px 0;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.08);
+  color: #dce7ff;
+  font-weight: 900;
+  font-size: .86rem;
+}
+.number-wall span.hot { background: rgba(0,212,255,0.25); color: #ffffff; }
+
+.complete-screen {
+  min-height: 560px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.complete-card {
+  width: min(680px, 100%);
+  border-radius: var(--radius-xl);
+  padding: 34px;
+  background: rgba(255,255,255,0.075);
+  border: 1px solid var(--line);
+}
+.trophy {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 34px;
+  color: #06121d;
+  background: linear-gradient(135deg, var(--accent), var(--accent-3));
+  font-size: 2rem;
+  font-weight: 1000;
+  box-shadow: 0 22px 44px rgba(0,212,255,0.18);
+}
+.final-score {
+  font-size: clamp(1.7rem, 3vw, 2.8rem);
+  line-height: 1.35;
+  font-weight: 1000;
+  margin-bottom: 12px;
+}
+.stars-display {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 18px 0;
+}
+.stars-display span {
+  width: 42px;
+  height: 11px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+}
+.stars-display span.full { background: linear-gradient(90deg, var(--accent), var(--accent-3)); }
+
+.confetti {
+  position: fixed;
+  width: 9px;
+  height: 18px;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 1000;
+}
+@keyframes confettiFall { to { transform: translateY(105vh) rotate(720deg); opacity: 0; } }
+
+@media (max-width: 920px) {
+  .start-layout { grid-template-columns: 1fr; }
+  .hero-panel { order: -1; }
+  .character-select, .challenges { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .map-head { flex-direction: column; }
+  .active-character-chip { width: 100%; }
+  .line-segment { min-width: 100%; transform: scale(.78); }
+}
+@media (max-width: 620px) {
+  .game-container { padding: 14px; }
+  .top-bar { align-items: stretch; flex-direction: column; }
+  .brand-pill { justify-content: center; }
+  .stats-row { justify-content: center; }
+  .start-screen, .map-screen, .complete-screen, .question-screen { padding: 22px; }
+  .character-select, .challenges, .answers { grid-template-columns: 1fr; }
+  .hero-panel { display: none; }
+  .question-header { grid-template-columns: 1fr; }
+  .character-mini { justify-self: start; }
+  .line-segment { transform: scale(.62); }
+  .visual-area { overflow: hidden; }
+  .number-wall { grid-template-columns: repeat(5, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="bg-orbs" aria-hidden="true">
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+  <div class="orb three"></div>
+</div>
+
+<div class="game-container">
+  <div class="top-bar">
+    <div class="brand-pill"><span class="brand-mark">P</span><span>تحدي الاحتمالات</span></div>
+    <div class="stats-row">
+      <div class="stat"><small>XP</small><span id="score">0</span></div>
+      <div class="stat"><small>محاولات</small><span id="lives">3</span></div>
+      <div class="sound-toggle" id="soundToggle" onclick="toggleSound()" title="الصوت">ON</div>
+    </div>
+  </div>
+
+  <main class="screen" id="screen"></main>
+</div>
+
+<script>
+let gameState = {
+  score: 0,
+  lives: 3,
+  character: null,
+  currentKingdom: null,
+  currentQuestion: 0,
+  currentCorrect: 0,
+  soundOn: true,
+  completedKingdoms: { geometry: 0, perm: 0, events: 0 }
+};
+
+const characters = {
+  saud: {
+    id: 'saud',
+    name: 'سعود آخر ليلة',
+    line: 'يذاكر قبل الاختبار بساعتين ويطلع يقول: سهلة يا رجال.',
+    avatar: 'avatar-red'
+  },
+  nawaf: {
+    id: 'nawaf',
+    name: 'نواف السنابي',
+    line: 'يوثق كل حل، حتى لو الجواب طلع خطأ.',
+    avatar: 'avatar-cap sunglasses'
+  },
+  faisal: {
+    id: 'faisal',
+    name: 'فيصل راعي المقصف',
+    line: 'يعرف الاحتمالات من طابور الفسحة أكثر من الكتاب.',
+    avatar: 'avatar-gold'
+  },
+  meshari: {
+    id: 'meshari',
+    name: 'مشاري أبو قهوة',
+    line: 'كل ما صعب السؤال قال: عطوني قهوة وأحلها.',
+    avatar: 'avatar-green sunglasses'
+  }
+};
+
+let audioCtx = null;
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+function playSound(type) {
+  if (!gameState.soundOn) return;
+  initAudio();
+  const playTone = (freq, start, duration, vol = 0.14, wave = 'sine') => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = wave;
+    osc.frequency.value = freq;
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime + start);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + start + duration);
+    osc.start(audioCtx.currentTime + start);
+    osc.stop(audioCtx.currentTime + start + duration);
+  };
+  if (type === 'click') playTone(620, 0, .08, .08);
+  if (type === 'correct') [523, 659, 784].forEach((f, i) => playTone(f, i * .08, .18, .11));
+  if (type === 'wrong') playTone(170, 0, .28, .11, 'sawtooth');
+  if (type === 'win') [392, 523, 659, 784, 1047].forEach((f, i) => playTone(f, i * .10, .22, .12));
+}
+
+function toggleSound() {
+  gameState.soundOn = !gameState.soundOn;
+  document.getElementById('soundToggle').textContent = gameState.soundOn ? 'ON' : 'OFF';
+  playSound('click');
+}
+
+function avatarHTML(characterOrClass) {
+  const cls = typeof characterOrClass === 'string' ? characterOrClass : characterOrClass.avatar;
+  return `<div class="saudi-avatar ${cls}"><span class="eyes"></span><span class="mouth"></span></div>`;
+}
+
+function updateStats() {
+  document.getElementById('score').textContent = gameState.score;
+  document.getElementById('lives').textContent = gameState.lives;
+}
+
+function showStartScreen() {
+  document.getElementById('screen').innerHTML = `
+    <section class="start-screen">
+      <div class="start-layout">
+        <div class="hero-copy">
+          <div class="kicker">نسخة الثانوية — بدون أجواء أطفال</div>
+          <h1 class="game-title"><span class="gradient-text">تحدي الاحتمالات</span><br>للشباب اللي يفهمونها بسرعة</h1>
+          <p class="subtitle">
+            لعبة تعليمية بطابع سعودي عصري: أسئلة احتمالات، مواقف خفيفة، وشخصيات تمثل جو الثانوي بدون ألوان طفولية أو شكل مبالغ فيه.
+          </p>
+          <h3 class="section-title">اختر خويك في التحدي:</h3>
+          <div class="character-select">
+            ${Object.values(characters).map(c => `
+              <div class="character" onclick="selectCharacter('${c.id}', this)">
+                ${avatarHTML(c)}
+                <div class="character-name">${c.name}</div>
+                <div class="character-line">${c.line}</div>
+              </div>
+            `).join('')}
+          </div>
+          <button class="btn" id="startBtn" onclick="startGame()" disabled>ابدأ التحدي</button>
+        </div>
+        <div class="hero-panel">
+          <div class="meme-card">
+            <div class="chat-bubble">الأستاذ: الاحتمال بسيط…</div>
+            <div class="chat-bubble alt">الطلاب: بسيط لين تدخل الكسور.</div>
+            <div class="chat-bubble">اليوم بنخليه مفهوم، بدون فلسفة زايدة.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function selectCharacter(id, el) {
+  playSound('click');
+  document.querySelectorAll('.character').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  gameState.character = characters[id];
+  const btn = document.getElementById('startBtn');
+  btn.disabled = false;
+}
+function startGame() { playSound('click'); showMap(); }
+
+function meter(count, total = 3) {
+  return Array.from({ length: total }, (_, i) => `<span class="star-dot ${i < count ? 'full' : ''}"></span>`).join('');
+}
+function wideMeter(count, total = 9) {
+  return Array.from({ length: total }, (_, i) => `<span class="${i < count ? 'full' : ''}"></span>`).join('');
+}
+
+function showMap() {
+  const k = gameState.completedKingdoms;
+  const c = gameState.character;
+  document.getElementById('screen').innerHTML = `
+    <section class="map-screen">
+      <div class="map-head">
+        <div>
+          <h2 class="map-title">اختر التحدي يا ${c.name}</h2>
+          <p class="map-subtitle">كل تحدي فيه 3 أسئلة. اجمع أكبر XP وخلك هادي… مو كل سؤال يحتاج توتر.</p>
+        </div>
+        <div class="active-character-chip">
+          ${avatarHTML(c)}
+          <div><strong>${c.name}</strong><small>${c.line}</small></div>
+        </div>
+      </div>
+      <div class="challenges">
+        <div class="challenge ${k.geometry === 3 ? 'completed' : ''}" data-code="GEO" onclick="enterKingdom('geometry')">
+          <div class="challenge-icon">خط</div>
+          <div class="challenge-name">تحدي الاحتمال الهندسي</div>
+          <div class="challenge-desc">احتمال وقوع نقطة على جزء من خط أو مساحة. يعني الموضوع قياسات، مو حظ بس.</div>
+          <div class="stars-meter">${meter(k.geometry)}</div>
+        </div>
+        <div class="challenge ${k.perm === 3 ? 'completed' : ''}" data-code="IND" onclick="enterKingdom('perm')">
+          <div class="challenge-icon">×</div>
+          <div class="challenge-name">تحدي الحوادث المستقلة</div>
+          <div class="challenge-desc">عملة، مكعب، وتجارب ما لها دخل ببعض. هنا الضرب هو صاحبك.</div>
+          <div class="stars-meter">${meter(k.perm)}</div>
+        </div>
+        <div class="challenge ${k.events === 3 ? 'completed' : ''}" data-code="EVT" onclick="enterKingdom('events')">
+          <div class="challenge-icon">أو</div>
+          <div class="challenge-name">تحدي الحوادث</div>
+          <div class="challenge-desc">متنافية أو غير متنافية؟ هنا تعرف متى تجمع ومتى تنتبه للتداخل.</div>
+          <div class="stars-meter">${meter(k.events)}</div>
+        </div>
+      </div>
+      ${k.geometry === 3 && k.perm === 3 && k.events === 3 ? '<button class="btn" onclick="showFinalScreen()">اعرض النتيجة النهائية</button>' : ''}
+    </section>
+  `;
+}
+
+const questions = {
+  geometry: [
+    {
+      scenario: "سعود رسم خط مشوار افتراضي بين نقاط في الحي عشان يشرح الاحتمال الهندسي. النقطة X بتقع عشوائياً على الخط JM.",
+      visual: `<div class="line-segment">
+        <div class="point">J</div>
+        <div class="segment" style="width:80px;"><span class="segment-label">3</span></div>
+        <div class="point">K</div>
+        <div class="segment" style="width:180px;"><span class="segment-label">7</span></div>
+        <div class="point">L</div>
+        <div class="segment" style="width:100px;"><span class="segment-label">4</span></div>
+        <div class="point">M</div>
+      </div>`,
+      question: "ما احتمال أن تقع X على القطعة LM؟",
+      answers: ["4/14 ≈ 0.29", "3/14 ≈ 0.21", "7/14 = 0.5", "11/14 ≈ 0.79"],
+      correct: 0,
+      explain: "الطول الكلي JM = 3 + 7 + 4 = 14، وطول LM = 4، لذلك الاحتمال = 4/14 ≈ 29%."
+    },
+    {
+      scenario: "نفس الخط السابق، ونواف قال: خلونا نرفع المستوى شوي قبل لا يدق جرس الحصة.",
+      visual: `<div class="line-segment">
+        <div class="point">J</div>
+        <div class="segment" style="width:80px;"><span class="segment-label">3</span></div>
+        <div class="point">K</div>
+        <div class="segment" style="width:180px;"><span class="segment-label">7</span></div>
+        <div class="point">L</div>
+        <div class="segment" style="width:100px;"><span class="segment-label">4</span></div>
+        <div class="point">M</div>
+      </div>`,
+      question: "ما احتمال أن تقع X على القطعة KM؟",
+      answers: ["7/14 = 0.5", "11/14 ≈ 0.79", "4/14 ≈ 0.29", "3/14 ≈ 0.21"],
+      correct: 1,
+      explain: "طول KM = 7 + 4 = 11، والطول الكلي = 14، لذلك الاحتمال = 11/14 ≈ 79%."
+    },
+    {
+      scenario: "فيصل جاب علبة ماء 8 لتر للاستراحة، وقال: لو مستوى الماء عشوائي، خلونا نحسبها قبل ما تخلص الفسحة.",
+      visual: `<div style="display:flex; justify-content:center; gap:24px; align-items:center; flex-wrap:wrap;">
+        <div class="container-visual"><div class="tea-level"></div></div>
+        <div class="visual-note">السعة الكلية: 8L<br>المطلوب: مستوى الماء تحت 2L</div>
+      </div>`,
+      question: "ما احتمال أن يكون مستوى الماء تحت 2 لتر؟",
+      answers: ["1/2 = 50%", "1/4 = 25%", "1/8 ≈ 12.5%", "3/8 ≈ 37.5%"],
+      correct: 1,
+      explain: "المنطقة المطلوبة = 2L من أصل 8L، لذلك الاحتمال = 2/8 = 1/4 = 25%."
+    }
+  ],
+  perm: [
+    {
+      scenario: "مشاري قرر يحسم نقاش المجموعة: عملة ومكعب رقمي في تجربة واحدة. كل نتيجة مستقلة عن الثانية.",
+      visual: `<div><div class="coin">شعار</div><div class="dice">1-6</div></div>`,
+      question: "ما احتمال ظهور الشعار والعدد 6 معاً؟",
+      answers: ["1/12", "1/6", "1/2", "1/8"],
+      correct: 0,
+      explain: "بما أن الحادثتين مستقلتان: P(شعار) × P(6) = 1/2 × 1/6 = 1/12."
+    },
+    {
+      scenario: "نواف رمى قطعة نقد 4 مرات وقال: لو جت كتابة كلها بصورها ستوري. كل رمية مستقلة.",
+      visual: `<div><div class="coin">ك</div><div class="coin">ك</div><div class="coin">ك</div><div class="coin">ك</div></div>`,
+      question: "ما احتمال الحصول على كتابة في المرات الأربع؟",
+      answers: ["1/4", "1/8", "1/16", "1/32"],
+      correct: 2,
+      explain: "كل رمية احتمال الكتابة فيها 1/2، إذن: 1/2 × 1/2 × 1/2 × 1/2 = 1/16."
+    },
+    {
+      scenario: "سعود رمى مكعبين رقميين متمايزين. الأول له نتيجة والثاني له نتيجة مستقلة عنها.",
+      visual: `<div><div class="dice">1</div><div class="dice">6</div></div>`,
+      question: "ما احتمال ظهور العدد 1 على الأول و 6 على الثاني؟",
+      answers: ["1/12", "1/36", "1/6", "2/36"],
+      correct: 1,
+      explain: "P(1 على الأول) × P(6 على الثاني) = 1/6 × 1/6 = 1/36."
+    }
+  ],
+  events: [
+    {
+      scenario: "اختيار رقم عشوائي من 1 إلى 100. فيصل قال: اللي يقبل القسمة على 10 أكيد يقبل على 5، لا تسوونها قضية.",
+      visual: `<div>
+        <div class="number-wall">${Array.from({length: 30}, (_, i) => `<span class="${(i+1)%5===0 ? 'hot' : ''}">${i+1}</span>`).join('')}</div>
+      </div>`,
+      question: "الحصول على عدد يقبل القسمة على 5 أو على 10: هل الحادثتان متنافيتان؟",
+      answers: ["متنافيتان", "غير متنافيتان", "مستقلتان", "مستحيلتان"],
+      correct: 1,
+      explain: "غير متنافيتين، لأن كل عدد يقبل القسمة على 10 يقبل القسمة على 5 أيضاً مثل 10 و20 و30. يوجد تداخل بين الحادثتين."
+    },
+    {
+      scenario: "رمي مكعبين رقميين متمايزين مرة واحدة. مشاري قال: المجموع يا 6 يا 7، ما يجي الاثنين بنفس الرمية.",
+      visual: `<div><div class="dice">مكعب 1</div><div class="dice">مكعب 2</div><br><div class="visual-note" style="text-align:center;margin-top:10px;">المجموع = 6 أو المجموع = 7؟</div></div>`,
+      question: "هل الحادثتان متنافيتان؟",
+      answers: ["متنافيتان", "غير متنافيتان", "مستقلتان", "مؤكدتان"],
+      correct: 0,
+      explain: "متنافيتان، لأنه لا يمكن أن يكون مجموع الرمية الواحدة 6 و7 في نفس الوقت."
+    },
+    {
+      scenario: "في لعبة بطاقات عادية من 52 بطاقة، سعود يسحب بطاقة واحدة. المطلوب ملك أو ملكة.",
+      visual: `<div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;"><div class="dice">K</div><div class="dice">Q</div><div class="dice">52</div></div>`,
+      question: "احتمال سحب ملك أو ملكة، مع العلم أنها حوادث متنافية:",
+      answers: ["4/52", "8/52 = 2/13", "12/52", "16/52"],
+      correct: 1,
+      explain: "P(ملك) + P(ملكة) = 4/52 + 4/52 = 8/52 = 2/13. بما أنها متنافية نجمع مباشرة."
+    }
+  ]
+};
+
+function enterKingdom(kingdom) {
+  playSound('click');
+  gameState.currentKingdom = kingdom;
+  gameState.currentQuestion = 0;
+  gameState.currentCorrect = 0;
+  showQuestion();
+}
+
+function kingdomName(key) {
+  return { geometry: 'الاحتمال الهندسي', perm: 'الحوادث المستقلة', events: 'الحوادث' }[key];
+}
+
+function showQuestion() {
+  const q = questions[gameState.currentKingdom][gameState.currentQuestion];
+  const total = questions[gameState.currentKingdom].length;
+  const progress = ((gameState.currentQuestion) / total) * 100;
+  const c = gameState.character;
+  document.getElementById('screen').innerHTML = `
+    <section class="question-screen">
+      <div class="question-header">
+        <div>
+          <div class="question-meta">
+            <span class="badge">${kingdomName(gameState.currentKingdom)}</span>
+            <span class="badge">سؤال ${gameState.currentQuestion + 1} من ${total}</span>
+            <span class="badge">صح في هذا التحدي: ${gameState.currentCorrect}</span>
+          </div>
+          <div class="progress" style="margin-top:14px;"><span style="--p:${progress}%"></span></div>
+        </div>
+        <div class="character-mini">${avatarHTML(c)}<span>${c.name}</span></div>
+      </div>
+      <div class="scenario">${q.scenario}</div>
+      <div class="visual-area">${q.visual}</div>
+      <div class="question-text">${q.question}</div>
+      <div class="answers" id="answers">
+        ${q.answers.map((a, i) => `<button class="answer-btn" onclick="checkAnswer(${i}, this)">${a}</button>`).join('')}
+      </div>
+      <div id="feedback"></div>
+    </section>
+  `;
+}
+
+function checkAnswer(index, btn) {
+  const q = questions[gameState.currentKingdom][gameState.currentQuestion];
+  const buttons = document.querySelectorAll('.answer-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  if (index === q.correct) {
+    playSound('correct');
+    btn.classList.add('correct');
+    gameState.score += 10;
+    gameState.currentCorrect += 1;
+    updateStats();
+    document.getElementById('feedback').innerHTML = `
+      <div class="feedback correct">
+        <strong>تمام، إجابة صحيحة.</strong><br>
+        ${q.explain}
+        <br>
+        <button class="btn" onclick="nextQuestion()">${gameState.currentQuestion + 1 < questions[gameState.currentKingdom].length ? 'السؤال التالي' : 'إنهاء التحدي'}</button>
+      </div>
+    `;
+  } else {
+    playSound('wrong');
+    btn.classList.add('wrong');
+    buttons[q.correct].classList.add('correct');
+    gameState.lives--;
+    updateStats();
+    if (gameState.lives <= 0) {
+      setTimeout(gameOver, 850);
+      return;
+    }
+    document.getElementById('feedback').innerHTML = `
+      <div class="feedback wrong">
+        <strong>قريبة، بس مو هي.</strong><br>
+        الإجابة الصحيحة: <strong>${q.answers[q.correct]}</strong><br>
+        ${q.explain}
+        <br>
+        <button class="btn btn-danger" onclick="nextQuestion()">${gameState.currentQuestion + 1 < questions[gameState.currentKingdom].length ? 'كمل السؤال اللي بعده' : 'ارجع للتحديات'}</button>
+      </div>
+    `;
+  }
+}
+
+function nextQuestion() {
+  playSound('click');
+  gameState.currentQuestion++;
+  if (gameState.currentQuestion < questions[gameState.currentKingdom].length) showQuestion();
+  else completeKingdom();
+}
+
+function celebrate() {
+  const colors = ['#00d4ff', '#20e3b2', '#7c5cff', '#f9c74f'];
+  for (let i = 0; i < 42; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + '%';
+      c.style.top = '-24px';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animation = `confettiFall ${2 + Math.random() * 1.6}s linear forwards`;
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 4200);
+    }, i * 34);
+  }
+}
+
+function completeKingdom() {
+  const correctCount = gameState.currentCorrect;
+  gameState.completedKingdoms[gameState.currentKingdom] = Math.max(gameState.completedKingdoms[gameState.currentKingdom], correctCount);
+  playSound('win');
+  celebrate();
+  const label = kingdomName(gameState.currentKingdom);
+  const reaction = correctCount === 3 ? 'فل مارك. كذا تدخل الاختبار وأنت واثق.' : correctCount === 2 ? 'ممتاز، باقي لمسة وتجلد التحدي.' : 'لا بأس، راجع الفكرة وارجع لها.';
+  document.getElementById('screen').innerHTML = `
+    <section class="complete-screen">
+      <div class="complete-card">
+        <div class="trophy">XP</div>
+        <h2 class="final-score">أنهيت تحدي ${label}</h2>
+        <div class="stars-display">${wideMeter(correctCount, 3)}</div>
+        <p style="color:var(--muted); font-size:1.12rem; line-height:1.8;">${reaction}<br>درجتك في هذا التحدي: ${correctCount * 10} XP من 30</p>
+        <button class="btn btn-secondary" onclick="showMap()">العودة للتحديات</button>
+      </div>
+    </section>
+  `;
+}
+
+function gameOver() {
+  document.getElementById('screen').innerHTML = `
+    <section class="complete-screen">
+      <div class="complete-card">
+        <div class="trophy" style="background:linear-gradient(135deg,#ff5f7e,#ff8f70); color:white;">!</div>
+        <h2 class="final-score">خلصت المحاولات</h2>
+        <p style="color:var(--muted); font-size:1.12rem; line-height:1.8;">نقاطك: ${gameState.score} XP. مو مشكلة، حتى سعود آخر ليلة يعيد أحياناً.</p>
+        <button class="btn" onclick="restartGame()">إعادة المحاولة</button>
+      </div>
+    </section>
+  `;
+}
+
+function showFinalScreen() {
+  playSound('win');
+  celebrate();
+  const total = gameState.completedKingdoms.geometry + gameState.completedKingdoms.perm + gameState.completedKingdoms.events;
+  const c = gameState.character;
+  document.getElementById('screen').innerHTML = `
+    <section class="complete-screen">
+      <div class="complete-card">
+        <div class="trophy">OK</div>
+        <h2 class="final-score">خلصت تحدي الاحتمالات</h2>
+        <div class="stars-display">${wideMeter(total, 9)}</div>
+        <p style="color:var(--muted); font-size:1.15rem; line-height:1.9;">النقاط النهائية: ${gameState.score} XP<br>${c.name} يقول: كذا الاحتمالات صارت مفهومة بدون دراما.</p>
+        <button class="btn" onclick="restartGame()">العب من جديد</button>
+      </div>
+    </section>
+  `;
+}
+
+function restartGame() {
+  const sound = gameState.soundOn;
+  gameState = {
+    score: 0,
+    lives: 3,
+    character: null,
+    currentKingdom: null,
+    currentQuestion: 0,
+    currentCorrect: 0,
+    soundOn: sound,
+    completedKingdoms: { geometry: 0, perm: 0, events: 0 }
+  };
+  updateStats();
+  document.getElementById('soundToggle').textContent = gameState.soundOn ? 'ON' : 'OFF';
+  showStartScreen();
+}
+
+showStartScreen();
+updateStats();
+</script>
+</body>
+</html>
